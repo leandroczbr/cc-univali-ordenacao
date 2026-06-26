@@ -10,7 +10,7 @@ void testeVetores(int N, int M){
   printarVetor(rand,N,"melhorCaso");
   rand = piorCaso(N);
   printarVetor(rand,N,"piorCaso");
-  float** vv = vetorDeVetores(N, M);
+  float** vv = vetorDeVetores(N, M); 
   for (int i = 0; i < M; i++)
   {
     printarVetor(vv[i], N, "vv[" + to_string(i) + "]");

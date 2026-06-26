@@ -8,7 +8,7 @@ using namespace std;
 float* vetorAleatorio(int N){
     float* vetor = new float[N];
     for (int i = 0; i < N; i++){
-        vetor[i] = (random()%N) + 1;
+        vetor[i] = (rand() % N) + 1;
     }
     return vetor;
 }
