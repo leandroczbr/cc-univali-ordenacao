@@ -5,41 +5,33 @@
 
 using namespace std;
 
-float* vetorAleatorio(int N){
-    float* vetor = new float[N];
+void vetorAleatorio(int* vetor, int N){
     for (int i = 0; i < N; i++){
         vetor[i] = (rand() % N) + 1;
     }
-    return vetor;
 }
-float* melhorCaso(int N){
-    float* vetor = new float[N];
+void melhorCaso(int* vetor, int N){
     for (int i = 0; i < N; i++){
         vetor[i] = i+1;
     }
-    return vetor;
 }
-float* piorCaso(int N){
-    float* vetor = new float[N];
+void piorCaso(int* vetor, int N){
     for (int i = 0; i < N; i++){
         vetor[i] = (N-i);
     }
-    return vetor;
 }
-float** vetorDeVetores(int N, int M){
+void vetorDeVetores(int** vv, int N, int M){
     if (M < 2){
         cout << "M deve ser maior que 1" << endl;
     }
-    float** vv = new float*[M];
-    vv[0] = melhorCaso(N);
-    vv[M-1] = piorCaso(N);
-    for (int i = 1; i < M-1; i++)
+    melhorCaso(vv[0], N);
+    piorCaso(vv[1], N);
+    for (int i = 2; i < M; i++)
     {
-        vv[i] = vetorAleatorio(N);
+        vetorAleatorio(vv[i], N);
     }
-    return vv;
 }
-void printarVetor(float* vetor, int N, string nome = ""){
+void printarVetor(int* vetor, int N, string nome = ""){
     if (nome != ""){
         cout << nome << " = ";
     }
@@ -47,5 +39,12 @@ void printarVetor(float* vetor, int N, string nome = ""){
         cout << vetor[i] << " ";
     }
     cout << endl;
+}
+void printarVetorDeVetores(int** vv, string nome, int N, int M){
+    printarVetor(vv[0], N,     nome + "Melhor caso [1]    ");
+    printarVetor(vv[1], N,     nome + "Pior caso [2]      ");
+    for (int i = 2; i < M; i++){
+        printarVetor(vv[i], N, nome + "Vetor aleatório [" + to_string(i+1) + "]");
+    }
 }
 #endif
