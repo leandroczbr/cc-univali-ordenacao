@@ -4,42 +4,54 @@
 #include "vetores.hpp"
 #include <cmath>
 
-void mesclar (int* vet, int comeco, int meio, int fim){
+void mesclar(int* vet, int comeco, int meio, int fim) {
     int com1 = comeco;
     int com2 = meio + 1;
     int tam = fim - comeco + 1;
     int comAux = 0;
-    int* vetAux = new int[tam];
+    int* vetAux = (int*)malloc(tam * sizeof(int));
 
-    while(com1<meio && com2<= fim){
-        if(vet[com1] < vet[com2]){
+    while (com1 <= meio && com2 <= fim) {
+        if (vet[com1] <= vet[com2]) {
             vetAux[comAux] = vet[com1];
             com1++;
-        }
-        else{
+        } else {
             vetAux[comAux] = vet[com2];
             com2++;
         }
         comAux++;
     }
 
-    while (com1<=meio){
+    while (com1 <= meio) {
         vetAux[comAux] = vet[com1];
         comAux++;
         com1++;
     }
 
-    while(com2<=fim){
+    while (com2 <= fim) {
         vetAux[comAux] = vet[com2];
         comAux++;
         com2++;
     }
 
-    for(comAux = comeco; comAux <= fim; comAux++){
-        vet[comAux] = vetAux[comAux - comeco];
+    for (comAux = 0; comAux < tam; comAux++) {
+        vet[comeco + comAux] = vetAux[comAux];
     }
-    delete[] vetAux;
 
+    free(vetAux);
+}
+
+void merge(int* vet, int comeco, int fim) {
+    if (comeco < fim) {
+        int meio = (comeco + fim) / 2;
+        merge(vet, comeco, meio);
+        merge(vet, meio + 1, fim);
+        mesclar(vet, comeco, meio, fim);
+    }
+}
+
+void mergesort(int* vet, int tam) {
+    merge(vet, 0, tam - 1);
 }
 
 void insertionsort(int* vet, int n){
@@ -86,7 +98,7 @@ void shell(int* vet, int inicio, int inc, int tam){
 
 void shellsort(int* vet, int tam){
     for (int i = 3; i > 0; i--){
-        int inc = pow(2, i);
+        int inc = 2 << i;
         for (int j = 0; j < inc; j++){
             shell(vet, j, inc, tam);
             //printarVetor(vet, tam, "j=" + to_string(j) + " inc=" + to_string(inc));
@@ -97,11 +109,12 @@ void shellsort(int* vet, int tam){
 
 void bubblesort(int* vet, int tam){
     bool troca = true;
+    int i = 1;
     while (troca)
     {
         troca = false;
         int chave = 0;
-        while (chave < tam-1)
+        while (chave < tam-i)
         {
             if (vet[chave] > vet[chave+1]){
                 int aux = vet[chave];
@@ -111,18 +124,20 @@ void bubblesort(int* vet, int tam){
             }
             chave++;
         }
+        i++;
         //printarVetor(vet, tam, "bubblesort");
     }
 }
 
-void selectionsort(int* vet, int tam){
-    for (int  i=0; i< tam-1; i++){
+void selectionsort(int* vet, int tam) {
+    for (int i = 0; i < tam - 1; i++) {
         int pos_menor = i;
-        for (int j = i+1; j< tam-1; j++){
-            if(vet[j] < vet[pos_menor]){
+        for (int j = i + 1; j < tam; j++) { 
+            if (vet[j] < vet[pos_menor]) {
                 pos_menor = j;
             }
         }
+        // Troca os valores
         int temp = vet[i];
         vet[i] = vet[pos_menor];
         vet[pos_menor] = temp;
@@ -134,27 +149,28 @@ void quick(int* vet, int esq, int dir){
     i = esq;
     j = dir;
     x = vet[(i + j) / 2];
-    
-    while(x > vet[i]){
-        i++;
-    }
-    while(x<vet[j]){
-         j--;
+
+    while (i <= j){
+        while (vet[i] < x){
+            i++;
+        }
+        while (vet[j] > x){
+            j--;
+        }
+        if(i <= j){
+            aux = vet[i];
+            vet[i] = vet[j];
+            vet[j] = aux;
+            i++;
+            j--;
+        }
     }
 
-    if(i<=j){
-        aux = vet[i];
-        vet[i] = vet[j];
-        vet[j] = aux;
-        i++;
-        j--;
+    if (esq < j){
+        quick(vet, esq, j);
     }
-
-    while(i>j){
-        if (esq < j)
-            quick(vet, esq, j);
-        if (dir > i)
-            quick(vet, i, dir);
+    if (i < dir){
+        quick(vet, i, dir);
     }
 
 }
@@ -163,23 +179,14 @@ void quicksort(int* vet, int tam){
     quick(vet, 0, tam - 1);
 }
 
-
-void merge(int* vet,int comeco, int fim){
-int meio;
-
-    if (comeco == fim)
-    return; 
-    meio = (comeco + fim) / 2;
-
-    merge(vet, comeco, meio);
-    merge(vet, meio + 1, fim);
-
-    mesclar(vet, comeco, meio, fim);
+bool estaDesordenado(int* vet, int tam){
+    for (int i = 0; i < tam-1; i++)
+    {
+        if (vet[i] > vet[i+1]){
+            return true;
+        }
+    }
+    return false;
 }
-
-void mergesort(int* vet, int tam){
-    merge(vet, 0, tam - 1);
-}
-
 
 #endif
